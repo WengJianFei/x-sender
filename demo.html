@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <script src="./lib/XSender.js"></script>
+    <title>Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            overflow: auto;
+        }
+
+        #app {
+            padding: 200px 20px;
+            height: 100%;
+        }
+
+        #btnGroup button {
+            margin: 4px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="chat"></div>
+    <div id="btnGroup"></div>
+    <div id="debug-view"></div>
+</div>
+
+<script>
+    const chat = new XSender(document.getElementById('chat'), {
+        autoFocus: true,
+        placeholder: 'placeholder',
+        chatStyle: {
+            maxHeight: '200px'
+        },
+        mentionConfig: {
+            callEvery: true,
+            options: [
+                { id: '1', name: '张三', pinyin: 'zhang san', avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png' },
+                { id: '2', name: '李四', pinyin: 'li si' },
+                { id: '3', name: '王五', pinyin: 'wang wu' },
+            ]
+        },
+        triggerConfig: [
+            {
+                dialogTitle: '话题',
+                key: '#',
+                options: [
+                    { id: '1', name: '话题1', pinyin: 'hua ti 1' },
+                    { id: '2', name: '话题2', pinyin: 'hua ti 2' },
+                    { id: '3', name: '话题3', pinyin: 'hua ti 3' },
+                ]
+            }
+        ],
+        selectConfig: [
+            {
+                dialogTitle: '风格',
+                key: 'style',
+                options: [
+                    { id: '1', name: '人像摄影', preview: 'https://jianfv.top/style/style1.webp' },
+                    { id: '2', name: '电影写真', preview: 'https://jianfv.top/style/style2.webp' },
+                    { id: '3', name: '中国风', preview: 'https://jianfv.top/style/style3.webp' }
+                ]
+            }
+        ],
+        tipConfig: true
+    })
+
+    // 自定义操作组
+    const options = [
+        {
+            label: 'closeTip',
+            click: () => {
+                chat.closeTip()
+            }
+        },
+        {
+            label: 'showTip',
+            click: () => {
+                chat.showTip({
+                    text: 'text',
+                    dialogText: 'dialogText'
+                })
+            }
+        },
+        {
+            label: 'showSelectPopup',
+            id: 'showSelectPopup',
+            click: () => {
+                chat.showSelectPopup('style', document.getElementById('showSelectPopup'))
+            }
+        },
+        {
+            label: 'enable',
+            click: () => {
+                chat.enable()
+            }
+        },
+        {
+            label: 'disable',
+            click: () => {
+                chat.disable()
+            }
+        },
+        {
+            label: 'focus',
+            click: () => {
+                chat.focus('mark')
+            }
+        },
+        {
+            label: 'backspace',
+            click: () => {
+                chat.backspace(-1)
+            }
+        },
+        {
+            label: 'move',
+            click: () => {
+                chat.move(-10)
+            }
+        },
+        {
+            label: 'redo',
+            click: () => {
+                chat.redo()
+            }
+        },
+        {
+            label: 'undo',
+            click: () => {
+                chat.undo()
+            }
+        },
+        {
+            label: 'removeInput',
+            click: () => {
+                chat.removeInput('job')
+            }
+        },
+        {
+            label: 'removeSelect',
+            click: () => {
+                chat.removeSelect('style', ['1', '2'])
+            }
+        },
+        {
+            label: 'removeTrigger',
+            click: () => {
+                chat.removeTrigger('#', ['2'])
+            }
+        },
+        {
+            label: 'removeMention',
+            click: () => {
+                chat.removeMention()
+            }
+        },
+        {
+            label: 'isEmpty',
+            click: () => {
+                console.log(chat.isEmpty())
+            }
+        },
+        {
+            label: 'setChatNode',
+            click: () => {
+                chat.setChatNode([
+                    [
+                        {
+                            type: 'Write',
+                            text: '这是一段文本内容'
+                        },
+                        {
+                            type: 'Mention',
+                            id: '1',
+                            name: '张三'
+                        }
+                    ],
+                    [
+                        {
+                            type: 'Write',
+                            text: '这是一段文本内容'
+                        },
+                        {
+                            type: 'Mention',
+                            id: '1',
+                            name: '张三'
+                        }
+                    ]
+                ])
+            }
+        },
+        {
+            label: 'setLineBreak',
+            click: () => {
+                chat.setLineBreak()
+            }
+        },
+        {
+            label: 'setInput',
+            click: () => {
+                chat.setInput({
+                    text: '这是一段文本内容',
+                    placeholder: '请输入',
+                    key: 'job'
+                })
+            }
+        },
+        {
+            label: 'setSelect',
+            click: () => {
+                chat.setSelect({
+                    id: '1',
+                    name: '风格1',
+                    key: 'style'
+                })
+            }
+        },
+        {
+            label: 'setTrigger',
+            click: () => {
+                chat.setTrigger({
+                    id: '1',
+                    name: '话题1',
+                    key: '#'
+                })
+            }
+        },
+        {
+            label: 'setMention',
+            click: () => {
+                chat.setMention({
+                    id: '1',
+                    name: '张三'
+                })
+            }
+        },
+        {
+            label: 'reset',
+            click: () => {
+                chat.reset({
+                    clearHistory: true,
+                    chatNode: [
+                        [
+                            {
+                                type: 'Write',
+                                text: '这是一段文本内容'
+                            },
+                            {
+                                type: 'Mention',
+                                id: '1',
+                                name: '张三'
+                            }
+                        ]
+                    ]
+                })
+            }
+        },
+        {
+            label: 'setText',
+            click: () => {
+                chat.setText('这是一段文本内容\n123')
+            }
+        },
+        {
+            label: 'setHtml',
+            click: () => {
+                chat.setHtml('<div style="color: red;">这是一段HTML内容</div>')
+            }
+        },
+        {
+            label: 'reverseHtml',
+            click: () => {
+                const html = window.localStorage.getItem('chat-html')
+                // 逆向解析HTML
+                chat.reverseHtml(html, true)
+            }
+        },
+        {
+            label: 'getHtml',
+            click: () => {
+                const html = chat.getHtml({
+                    identifyLink: true,
+                    saveTagData: true
+                })
+                document.getElementById('debug-view').innerHTML = html
+                window.localStorage.setItem('chat-html', html)
+            }
+        },
+        {
+            label: 'getText',
+            click: () => {
+                document.getElementById('debug-view').innerText = chat.getText()
+            }
+        },
+        {
+            label: 'getTagData',
+            click: () => {
+                console.log(chat.getTagData())
+            }
+        },
+        {
+            label: 'destroy',
+            click: () => {
+                chat.destroy()
+            }
+        }
+    ]
+
+
+    const frag = document.createDocumentFragment()
+    options.forEach((row) => {
+        const btn = document.createElement('button')
+        if (row.id) btn.setAttribute('id', row.id)
+        btn.textContent = row.label
+        btn.onclick = row.click
+        frag.appendChild(btn)
+    })
+    document.getElementById('btnGroup').appendChild(frag)
+
+    chat.bus.on('demo', 'send', () => {
+        const html = chat.getHtml()
+        document.getElementById('debug-view').innerHTML = html
+        window.localStorage.setItem('chat-html', html)
+    })
+</script>
+</body>
+</html>
