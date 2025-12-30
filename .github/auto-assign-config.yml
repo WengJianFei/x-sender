@@ -1,0 +1,5 @@
+# 标签匹配规则
+label_assignees:
+  bug: ['WengJianFei', 'JianFv']
+# 所有Issue默认分配的负责人
+default_assignees: ['WengJianFei', 'JianFv']

@@ -1,0 +1,19 @@
+name: Issue 自动分配负责人
+on:
+  issues:
+    types: [opened, labeled]
+  pull_request:
+    types: [opened, labeled]
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: kentaro-m/auto-assign-action@v2.1.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          # ✅ 规则：标签 → 负责人GitHub用户名（按需修改）
+          configuration-path: .github/auto-assign-config.yml
