@@ -1,4 +1,4 @@
-name: Summarize new issues
+name: Issue 内容提炼
 
 on:
   issues:

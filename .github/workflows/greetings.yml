@@ -1,4 +1,4 @@
-name: Greetings
+name: 用户首次创建 Issue 自动留言
 
 on: [pull_request_target, issues]
 
