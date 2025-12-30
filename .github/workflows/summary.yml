@@ -2,7 +2,7 @@ name: Summarize new issues
 
 on:
   issues:
-    types: [opened]
+    types: [opened, edited]
 
 jobs:
   summary:
