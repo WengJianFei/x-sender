@@ -9,8 +9,8 @@ jobs:
     permissions:
       issues: write
     steps:
-      - name: 自动评论提醒补充信息（保留完整格式）
-        uses: actions/github-script@v7 # GitHub官方维护，稳定无坑
+      - name: 自动评论提醒补充信息（完美保留格式）
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -18,9 +18,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              # ✅ 用反引号「`」包裹文本，天生保留所有换行/缩进/符号，格式1:1还原
-              body: `📌 温馨提醒：请确认您的Issue包含以下信息（不是BUG项议题忽略此回复）：
-  ✅ 问题复现步骤
-  ✅ 可参考的复现项目文件[.vue|.jsx|.tsx|.js|.ts]
-  ✅ 运行环境（插件版本/浏览器类型/设备类型）`
-  })
+              body: "📌 温馨提醒：请确认您的Issue包含以下信息（不是BUG项议题忽略此回复）：\n✅ 问题复现步骤\n✅ 可参考的复现项目文件[.vue|.jsx|.tsx|.js|.ts]\n✅ 运行环境（插件版本/浏览器类型/设备类型）"
+            })
