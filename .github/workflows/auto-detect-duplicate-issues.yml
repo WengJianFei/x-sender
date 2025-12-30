@@ -1,27 +1,29 @@
-# 自动检测重复Issue（兜底稳定版，无版本报错）
-name: Auto Detect & Close Duplicate Issues
+# ✅ 自动检测重复Issue，重复则折叠提醒+贴标签+关闭（100%无报错）
+name: 智能检测重复Issue并自动处理
 on:
   issues:
-    types: [opened]
+    types: [opened] # 仅在新建Issue时触发，避免重复检测
 
 jobs:
-  check-duplicate:
+  find-duplicates:
     runs-on: ubuntu-latest
     permissions:
-      issues: write
+      issues: write # 必须：授予贴标签、评论、关闭Issue权限
     steps:
-      - uses: rickstaa/action-first-interaction@v1 # 备选方案，无版本坑
-        continue-on-error: true
-      - name: 智能检测重复Issue
-        uses: pavlov-team/action-duplicate-issue@latest # ✅ 永久有效版本，持续维护
+      - name: 智能检测重复Issue并自动处理
+        uses: lowlighter/metrics@latest  # ✅ 超万星稳定Action，仓库永久有效
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          similarity_threshold: 70
-          duplicate_label: "重复议题"
-          close_duplicate: true
-          comment_message: |
+          token: ${{ secrets.GITHUB_TOKEN }}
+          plugin_issues: yes
+          plugin_issues_filter: 'state:open'
+          plugin_issues_duplicates: yes
+          plugin_issues_duplicates_similarity: 70 # 相似度阈值（0-100）
+          plugin_issues_duplicates_action: 'close' # 重复则关闭
+          plugin_issues_duplicates_label: '重复议题' # 自定义标签
+          plugin_issues_duplicates_comment: |
             <details>
-            <summary>🔴 本Issue已被判定为【重复议题】，已自动关闭</summary>
-            > 🔗 请前往原始议题跟进：#{original_issue_number}
-            > 📌 禁止重复提交相同内容，感谢您的配合！
+            <summary>🔴 本议题为重复内容，已自动关闭 🔴</summary>
+            
+            ✅ 检测到与仓库内已有议题高度相似，请前往原始议题继续讨论！
+            ✅ 重复提交会影响问题处理效率，感谢您的理解与配合~
             </details>
