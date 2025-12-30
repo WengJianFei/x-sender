@@ -6,15 +6,19 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write # ✅ 必加：授予评论Issue的权限（否则403报错）
     steps:
-      - uses: octokit/request-action@v2.x
+      - name: 自动评论提醒补充信息
+        uses: octokit/request-action@v2.x
         with:
-          route: POST /repos/{owner}/{repo}/issues/{issue_number}/comments
-          issue_number: ${{ github.event.issue.number }}
-          body: |
+          # ✅ 核心1：把issue编号直接嵌入API路由中
+          route: POST /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # ✅ 核心2：所有请求体参数(body)通过环境变量传递，格式固定为 INPUT_XXX
+          INPUT_BODY: |
             📌 温馨提醒：请确认您的Issue包含以下信息（不是BUG项议题忽略此回复）：
             ✅ 问题复现步骤
             ✅ 可参考的复现项目文件[.vue|.jsx|.tsx|.js|.ts]
             ✅ 运行环境（插件版本/浏览器类型/设备类型）
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

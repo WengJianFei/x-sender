@@ -1,19 +1,20 @@
-name: Issue 自动分配负责人
+name: Issue/PR 自动分配负责人
 on:
   issues:
     types: [opened, labeled]
-  pull_request:
+  pull_request_target: # 用pull_request_target更安全，避免权限问题
     types: [opened, labeled]
 
 jobs:
-  assign:
+  auto-assign:
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
     steps:
-      - uses: kentaro-m/auto-assign-action@v2.1.0
+      - name: 自动分配负责人
+        uses: pozil/auto-assign-issue@v2 # ✅ 高星稳定款，无版本坑
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          # ✅ 规则：标签 → 负责人GitHub用户名（按需修改）
-          configuration-path: .github/auto-assign-config.yml
+          # 直接在这里写规则，无需额外创建config.yml文件（更简洁）
+          assignees: 'WengJianFei, JianFv'
