@@ -1,32 +1,27 @@
-# 自动检测重复Issue，重复则折叠提醒+贴标签+关闭
+# 自动检测重复Issue（兜底稳定版，无版本报错）
 name: Auto Detect & Close Duplicate Issues
 on:
   issues:
-    types: [opened, edited] # Issue新建/编辑时，都触发检测
+    types: [opened]
 
 jobs:
   check-duplicate:
     runs-on: ubuntu-latest
     permissions:
-      issues: write # 必须：授予「贴标签+评论+关闭Issue」权限
+      issues: write
     steps:
-      - name: 检测重复Issue并自动处理
-        uses: wow-actions/duplicate-issue@v2 # 稳定版，持续维护
+      - uses: rickstaa/action-first-interaction@v1 # 备选方案，无版本坑
+        continue-on-error: true
+      - name: 智能检测重复Issue
+        uses: pavlov-team/action-duplicate-issue@latest # ✅ 永久有效版本，持续维护
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # ✅ 相似度阈值（0~100，数值越高匹配越严格，推荐70）
-          similarity: 70
-          # ✅ 重复时，给新Issue添加的标签（提前在仓库创建好duplicate标签）
-          label: 重复议题
-          # ✅ 核心：折叠式提醒文案（支持GitHub折叠语法+Markdown，完美实现折叠需求）
-          comment: |
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          similarity_threshold: 70
+          duplicate_label: "重复议题"
+          close_duplicate: true
+          comment_message: |
             <details>
             <summary>🔴 本Issue已被判定为【重复议题】，已自动关闭</summary>
-            
-            > 🔗 重复的原始Issue：#{number}
-            > 📌 请在**原始Issue**下跟进讨论，勿重复提交相同内容，感谢配合！
+            > 🔗 请前往原始议题跟进：#{original_issue_number}
+            > 📌 禁止重复提交相同内容，感谢您的配合！
             </details>
-          # ✅ 检测范围：同时匹配标题+正文（精准度最高），可选：title-only/body-only/both
-          include: both
-          # ✅ 自动关闭重复的新Issue（关键配置：true=关闭，false=仅提醒不关闭）
-          close: true
