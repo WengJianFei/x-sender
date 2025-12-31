@@ -1,5 +1,6 @@
 name: 错误报告 🐛
 description: 提交一个 x-sender 的 bug
+assignees: ['WengJianFei']
 labels: ['功能障碍']
 body:
   - type: markdown

@@ -1,5 +1,6 @@
 name: 功能请求 💄
 description: 我想给 x-sender 加个新功能
+assignees: ['WengJianFei']
 labels: ['新功能特性']
 body:
   - type: markdown
