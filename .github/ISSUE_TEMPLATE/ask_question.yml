@@ -1,0 +1,11 @@
+name: 寻求帮助 🙏
+description: 我在使用 x-sender 时遇到了使用问题，不知道某项功能的具体使用方法
+labels: ['需要协助']
+body:
+  - type: markdown
+    attributes:
+      value: 感谢您的贡献！❤️ 请在上方写一个易于搜索的标题 ⬆️。
+  - type: textarea
+    attributes:
+      label: 寻求帮助的功能点
+      description: 询问哪项具体功能的使用方法？比如：该如何使用 x-sender 将光标聚焦到发送器中指定的输入元素。
