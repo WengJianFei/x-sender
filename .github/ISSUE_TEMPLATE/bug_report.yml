@@ -1,0 +1,53 @@
+name: 错误报告 🐛
+description: 提交一个 x-sender 的 bug
+labels: ['功能障碍']
+body:
+  - type: markdown
+    attributes:
+      value: 感谢您的贡献！❤️ 请在上方写一个易于搜索的标题 ⬆️。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 重现步骤
+      description: |
+        **⚠️ 我们无法重现的问题是无法修复的。**
+
+        请提供一个在线示例的链接和一组明确的步骤来重现这个错误。请参考文档的[代码调试页](https://jianfv.top/XSender/debug)创建一个可以在线预览调试的代码[如：码上掘金](https://code.juejin.cn/)进行重现案例。
+      value: |
+        在线示例链接：（必填）
+
+        步骤：
+        1.
+        2.
+        3.
+  - type: textarea
+    attributes:
+      label: 当前行为
+      description: 描述实际发生的情况，而不是预期行为。
+  - type: textarea
+    attributes:
+      label: 预期行为
+      description: 描述应该发生的情况。
+  - type: textarea
+    attributes:
+      label: 上下文
+      description: 您想要完成什么？提供背景有助于我们提出在现实世界中更有用的解决方案。
+  - type: input
+    id: version
+    attributes:
+      label: 版本
+      description: 使用的 x-sender 版本是多少？
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: 您在哪些浏览器上遇到了这个问题？
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - 其他
