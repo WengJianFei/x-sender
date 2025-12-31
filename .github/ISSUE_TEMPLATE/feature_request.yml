@@ -1,0 +1,15 @@
+name: 功能请求 💄
+description: 我想给 x-sender 加个新功能
+labels: ['新功能特性']
+body:
+  - type: markdown
+    attributes:
+      value: 感谢您的贡献！❤️ 请在上方写一个易于搜索的标题 ⬆️。
+  - type: textarea
+    attributes:
+      label: 需求动机
+      description: 要解决什么问题？提供背景有助于我们提出在现实世界中更有用的解决方案。
+  - type: textarea
+    attributes:
+      label: 提议的 API 是什么样的？
+      description: 描述您希望用什么样的 API 来解决这个问题，可以写一个具体的 markdown 代码块示例。
