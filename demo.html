@@ -330,7 +330,8 @@
     })
     document.getElementById('btnGroup').appendChild(frag)
 
-    chat.bus.on('demo', 'send', () => {
+    const { EVENT_COMMON_SEND } = XSender.EventSet
+    chat.bus.on('demo', EVENT_COMMON_SEND, () => {
         const html = chat.getHtml()
         document.getElementById('debug-view').innerHTML = html
         window.localStorage.setItem('chat-html', html)

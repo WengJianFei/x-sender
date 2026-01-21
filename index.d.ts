@@ -1,3 +1,5 @@
+export type BusEventKey = string | symbol;
+
 export interface MentionItem {
     id: string;
     name: string;
@@ -23,7 +25,7 @@ export interface MentionConfig {
     everyText?: string;
     asyncMatch?: { (matchStr: string): Promise<MentionItem[]> };
     emptyText?: string;
-    options: MentionItem[];
+    options?: MentionItem[];
 }
 
 export interface TriggerConfig {
@@ -37,24 +39,30 @@ export interface SelectConfig {
     dialogTitle: string;
     key: string;
     options: SelectItem[];
+    multiple?: boolean;
+    emptyText?: string;
+    showSearch?: boolean;
+    placeholder?: string;
+    searchEmptyText?: string;
 }
 
 export interface TipConfig {
     tipTemplate?: string;
     dialogTemplate?: string;
     closeNames?: string[];
+    offsetTop?: number;
 }
 
 export interface UpdateOption {
     placeholder?: string;
-    chatStyle?: CSSStyleDeclaration;
+    chatStyle?: Partial<CSSStyleDeclaration>;
     maxLength?: number;
     keyboardWrapFun?: { (event: KeyboardEvent): boolean };
     keyboardSendFun?: { (event: KeyboardEvent): boolean };
     mentionConfig?: MentionConfig;
     triggerConfig?: TriggerConfig[];
     selectConfig?: SelectConfig[];
-    tipConfig?: TipConfig;
+    tipConfig?: TipConfig | boolean;
 }
 
 export interface Options extends UpdateOption {
@@ -111,7 +119,7 @@ export interface SelectProps {
 
 export interface InputProps {
     type: 'Input';
-    text: string;
+    text?: string;
     placeholder: string;
     key: string;
 }
@@ -130,6 +138,11 @@ export interface ResetConfig {
     chatNode?: AnyTagProps[][];
 }
 
+export interface GetHtmlConfig {
+    saveTagData?: boolean;
+    identifyLink?: boolean;
+}
+
 export class ChatElement {
     container: HTMLElement;
     rollBox: HTMLElement;
@@ -138,31 +151,104 @@ export class ChatElement {
     dialogRoot: HTMLElement;
 }
 
+export class Grid {
+    type: 'Grid';
+    $el: HTMLElement;
+    children: (Write | Input | Mention | Trigger | Select)[];
+    context: ChatElement;
+    renderChildren(model: AnyTagProps[]): void
+}
+export class Write {
+    type: 'Write';
+    $el: HTMLElement;
+    context: Grid;
+    text: string;
+    focus(offset?: number): void
+    syncNode(): void
+}
+export class Input {
+    type: 'Input';
+    $el: HTMLElement;
+    context: Grid;
+    key: string;
+    placeholder: string;
+    text: string;
+    focus(offset?: number): void
+    syncNode(): void
+}
+export class Mention {
+    type: 'Mention';
+    $el: HTMLElement;
+    context: Grid;
+    id: string;
+    name: string;
+}
+export class Trigger {
+    type: 'Trigger';
+    $el: HTMLElement;
+    context: Grid;
+    id: string;
+    name: string;
+    key: string;
+}
+export class Select {
+    type: 'Select';
+    $el: HTMLElement;
+    context: Grid;
+    id: string;
+    name: string;
+    key: string;
+    updateTag (tag: SelectItem)
+}
+
 export class ChatEditor {
     isComposition: boolean;
     textLength: number;
-    NODES: any;
+    NODES: Grid[];
+    compileNodes(nodes: Grid[]): AnyTagProps[][]
 }
 
 export class Bus {
-    on(key: string, eventName: string, callback: Function | Promise<any>)
-    emit(eventName: string, ...args: any[])
-    off(key: string, eventName: string)
-    offKeyEvent(key: string)
+    on(key: BusEventKey, eventName: BusEventKey, callback: Function | Promise<any>)
+    emit(eventName: BusEventKey, ...args: any[])
+    off(key: BusEventKey, eventName: BusEventKey)
+    offKeyEvent(key: BusEventKey)
+}
+
+export class Component {
+    type: string;
+    data: Record<string, any>;
+    remove()
+    render(): string
 }
 
 declare class XSender {
     static version: string;
+    static EventSet: {
+        EVENT_COMMON_SEND: symbol;
+        EVENT_COMMON_CHANGE: symbol;
+        EVENT_COMMON_DESTROY: symbol;
+        EVENT_COMMON_TIP_STATE: symbol;
+        EVENT_COMMON_DIALOG_CLOSE: symbol;
+        EVENT_COMMON_SELECT_ACTIVE: symbol;
+        EVENT_EDITOR_INSERT_MENTION: symbol;
+        EVENT_EDITOR_INSERT_TRIGGER: symbol;
+        EVENT_EDITOR_INSERT_SELECT: symbol;
+        EVENT_EDITOR_INSERT_INPUT: symbol;
+        EVENT_EDITOR_INSERT_CUSTOM: symbol;
+    };
+    static Component: Component;
     options: Options;
     deviceInfo: DeviceInfo;
     chatElement: ChatElement;
     chatEditor: ChatEditor;
     bus: Bus;
-    constructor(container: HTMLElement, options: Options)
+    constructor(container: HTMLElement, options?: Options)
     updateConfig(options: UpdateOption): void
     nextTick(callback?: Function | Promise<any>): Promise<void>
     getSelection(): Selection
-    getHtml(options?: { identifyLink?: boolean; saveTagData?: boolean }): string
+    getModel(): AnyTagProps[][]
+    getHtml(config?: GetHtmlConfig): string
     getText(): string
     getTagData(): TagData
     setLineBreak(): Promise<void>
@@ -178,9 +264,11 @@ declare class XSender {
     removeSelect(key: SelectProps['key'], ids?: SelectProps['id'][]): Promise<void>
     removeInput(key: InputProps['key']): Promise<void>
     reverseHtml(html: string, append?: boolean): Promise<void>
-    reset(resetConfig: ResetConfig): Promise<void>
+    reset(resetConfig?: ResetConfig): Promise<void>
     undo(): Promise<void>
     redo(): Promise<void>
+    jumpPrev(type: 'start' | 'end'): void
+    jumpNext(type: 'start' | 'end'): void
     move(length: number): void
     backspace(length: number): Promise<void>
     focus(type: FocusType): void
@@ -191,5 +279,8 @@ declare class XSender {
     showSelectPopup(key: string, el: HTMLElement): void
     showTip(props: Record<string, string>): void
     closeTip(): void
+    getCurrentNode(): { node: Node, offset: number, instance: Write | Input }
+    useComponent(type: string, component: typeof Component): void
+    setComponent(type: string, data: object): Promise<void>
 }
 export default XSender
