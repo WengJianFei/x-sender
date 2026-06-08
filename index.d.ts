@@ -51,6 +51,7 @@ export interface TipConfig {
     dialogTemplate?: string;
     closeNames?: string[];
     offsetTop?: number;
+    backspace?: boolean;
 }
 
 export interface UpdateOption {
@@ -230,14 +231,14 @@ declare class XSender {
         EVENT_COMMON_DESTROY: symbol;
         EVENT_COMMON_TIP_STATE: symbol;
         EVENT_COMMON_DIALOG_CLOSE: symbol;
-        EVENT_COMMON_SELECT_ACTIVE: symbol;
+        EVENT_COMMON_TAG_CLICK: symbol;
         EVENT_EDITOR_INSERT_MENTION: symbol;
         EVENT_EDITOR_INSERT_TRIGGER: symbol;
         EVENT_EDITOR_INSERT_SELECT: symbol;
         EVENT_EDITOR_INSERT_INPUT: symbol;
         EVENT_EDITOR_INSERT_CUSTOM: symbol;
     };
-    static Component: Component;
+    static Component: typeof Component;
     options: Options;
     deviceInfo: DeviceInfo;
     chatElement: ChatElement;
@@ -267,11 +268,11 @@ declare class XSender {
     reset(resetConfig?: ResetConfig): Promise<void>
     undo(): Promise<void>
     redo(): Promise<void>
-    jumpPrev(type: 'start' | 'end'): void
-    jumpNext(type: 'start' | 'end'): void
+    jumpPrev(type?: 'start' | 'end'): void
+    jumpNext(type?: 'start' | 'end'): void
     move(length: number): void
     backspace(length: number): Promise<void>
-    focus(type: FocusType): void
+    focus(type?: FocusType): void
     disable(): void
     enable(): void
     isEmpty(trim?: boolean): boolean
